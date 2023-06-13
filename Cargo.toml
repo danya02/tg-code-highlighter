@@ -6,7 +6,17 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1.0.71"
+cosmic-text = "0.8.0"
+dotenvy = "0.15.7"
+env_logger = "0.10.0"
+fontdb = "0.14.1"
 futures = "0.3.28"
+image = "0.24.6"
+log = "0.4.19"
+rand = "0.8.5"
+sqlx = { version = "0.6.3", features = ["sqlite", "runtime-tokio-rustls"] }
+syntect = "5.0.0"
 # to fix old version: https://github.com/telegram-rs/telegram-bot/issues/270
 telegram-bot =  { git = "https://github.com/telegram-rs/telegram-bot.git", rev = "65ad5cf" }
 tokio = { version = "1.28.2", features = ["full"] }

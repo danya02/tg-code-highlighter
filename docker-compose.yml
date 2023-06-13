@@ -4,4 +4,7 @@ services:
     build: .
     environment:
       - TELEGRAM_BOT_TOKEN=...
+      - DATABASE_URL=/database.db
     restart: always
+    volumes:
+      - ./database.db:/database.db:rw
