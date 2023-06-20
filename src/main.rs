@@ -1,6 +1,6 @@
 use std::{
     env,
-    time::{self, UNIX_EPOCH, SystemTime},
+    time::{UNIX_EPOCH, SystemTime},
 };
 
 use cosmic_text::{FontSystem, SwashCache};
@@ -115,7 +115,12 @@ async fn process_inline_query(
         real_code
     } else {code.clone()};
 
-    println!("{code}");
+    let syntax = 
+    if let Some(ext) = code_ext {
+        ps.find_syntax_by_extension(ext)
+    } else {
+        Some(ps.find_syntax_plain_text())
+    };
 
     // Keep making IDs until an insertion succeeds, up to a maximum of 100 attempts
     let mut attempts = 0;
@@ -148,7 +153,7 @@ async fn process_inline_query(
     // Set this to a chat that you control.
     // This will yield a server file_id, which can be then used in the inline query result photo.
 
-    let png_data = render::draw_code(font_system, swash_cache, ps, ts, &code);
+    let png_data = render::draw_code(font_system, swash_cache, ps, ts, &code, syntax.unwrap_or(ps.find_syntax_plain_text()));
 
     let photo_upload = InputFileUpload::with_data(png_data, "code.png");
 
@@ -162,7 +167,8 @@ async fn process_inline_query(
     };
 
     let language = if code_ext.is_some() {
-        format!("Language: `{}`", code_ext.unwrap())
+        format!("Language: `{}`{}", code_ext.unwrap(),
+        if let None = syntax {r" \(ERROR: could not find syntax by this extension\!\)"} else {""})
     } else {
         format!(r"Language unknown \(try `py:print\('Hello World'\)` and `cpp:int main\(int argc, char **argv\);`\)")
     };
